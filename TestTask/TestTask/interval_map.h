@@ -28,15 +28,14 @@ public:
 
     void assign(K const& keyBegin, K const& keyEnd, V const& val) {
         if (!(keyBegin < keyEnd)) {
-            return; // Ничего не делаем для пустого интервала
+            return; // Do nothing for an empty interval
         }
 
         if (keyEnd > maxKeyEnd) {
             maxKeyEnd = keyEnd;
         }
 
-
-        // Проверяем, есть ли интервал, который начинается между началом и концом этого интервала и заканчивается после keyEnd
+        // Check if there is an interval that starts between the beginning and end of this interval and ends after keyEnd
         auto itBegin = m_map.lower_bound(keyBegin);
         auto itEnd = m_map.lower_bound(keyEnd);
         auto curInt = std::prev(itEnd);
@@ -46,7 +45,7 @@ public:
             m_map[keyEnd] = val;
         }
 
-        // Проверяем, есть ли интервал, который начинается до keyBegin и заканчивается после keyEnd, если да, делим его на 2 части
+        // Check if there is an interval that starts before keyBegin and ends after keyEnd, if so, split it into two parts
         itEnd = m_map.upper_bound(keyEnd);
         itBegin = m_map.upper_bound(keyBegin);
         itBegin = std::prev(itBegin);
@@ -54,15 +53,15 @@ public:
             m_map[keyEnd] = itBegin->second;
         }
 
-        //Обновляем значение itEnd, itBegin после каждого возможного удаления элементов
+        // Update the values of itEnd and itBegin after potential element removals
         itEnd = m_map.lower_bound(keyEnd);
         itBegin = m_map.lower_bound(keyBegin);
-        //Удаляем старые значения в интервале
+        // Remove old values in the interval
         m_map.erase(itBegin, itEnd);
 
 
 
-        // Вставляем новое значение в интервал
+        // Insert the new value into the interval
         m_map[keyBegin] = val;
     }
 };
